@@ -8,8 +8,10 @@ from tkinter import *
 from tkinter import ttk
 from tkinter import messagebox
 import requests
+import lxml
 from bs4 import BeautifulSoup
 from requests import get
+from datetime import date
 
 def Create_Driver():
     
@@ -28,16 +30,59 @@ def Create_Driver():
     
     return driver
 
+def get_today():
+    today = date.today()
+    d2 = today.strftime("%B %d, %Y")    
+    month = d2.split(" ")[0]
+    day = d2.split(" ")[1].replace(",", "")
+    year = d2.split(" ")[2]
+    return month, day, year
+
+def get_date_detail(date):
+    day_of_week = date.split(" ")[0]
+    day = date.split(" ")[1]
+    month = date.split(" ")[2]
+    year = date.split(" ")[3]
+    return day_of_week, day, month, year
 
 def Start():
-    # driver = Create_Driver()
-    # driver.get("https://www.racenet.com.au/racing-form-guide")
-    page = requests.get("https://www.racenet.com.au/racing-form-guide")
+    if(v == 1):
+        Australia = True
+    else:
+        Australia = False
+    driver = Create_Driver()
+    driver.get("https://www.racenet.com.au/racing-form-guide")
+    # page = requests.get("https://www.racenet.com.au/racing-form-guide", stream=True)
+    # page.raw.decode_content = True
+    # tree = lxml.html.parse(page.raw)
+    # print(tree)
+    # tab = tree.xpath('//*[@id="meetings-tabs"]/div/ul/li[1]/a')
+    # TAB_1 = driver.find_element_by_xpath('//*[@id="meetings-tabs"]/div/ul/li[1]/a')
+    # TAB_2 = driver.find_element_by_xpath('//*[@id="meetings-tabs"]/div/ul/li[2]/a')
+    # TAB_3 = driver.find_element_by_xpath('//*[@id="meetings-tabs"]/div/ul/li[3]/a')
+    # TAB_4 = driver.find_element_by_xpath('//*[@id="meetings-tabs"]/div/ul/li[4]/a')
+    # TAB_5 = driver.find_element_by_xpath('//*[@id="meetings-tabs"]/div/ul/li[5]/a')
+    # TAB_6 = driver.find_element_by_xpath('//*[@id="meetings-tabs"]/div/ul/li[6]/a')
 
-    print(page.text)
+    # First_tab_date = driver.find_element_by_xpath('//*[@id="meetinglist_tab_1"]/section[1]/div[1]/span').get_attribute('innerHTML')
+
+
+    if Australia:
+        key = "section[1]"
+    else:
+        key = "section[2]"
+
+    all_urls = []
+    for  _ in range(6):
+        tab_urls = driver.find_elements_by_xpath('//*[@id="meetinglist_tab_%s"]/section[1]/div[2]/table/tbody/tr/td[1]/div/h3/a'%_)
+        print(len(tab_urls))
+
+
+    # print(page.text)
 
 
 if __name__ == '__main__':
+
 
     list_city = []
     list_agent = []
